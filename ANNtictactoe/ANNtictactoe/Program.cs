@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//wacky test
-
 ////Tic Tac Toe!
 //- = None
 //O = symbol for O's
@@ -30,12 +28,14 @@ namespace ANNtictactoe
         static void Main(string[] args)
         {
             Program p = new Program();
-            TicTacToe t = new TicTacToe();
+            TicTacToe t;
             int x = -1;
             int y = -1;
-            int turn = 0;
+            int turn;
             p.enemy = new ANN();
             string s = "";
+            bool temp = false;
+            bool fullBoard = true;
 
             Console.WriteLine("Welcome to Tic Tac Toe! Your opponent will be an ANN, which is an Artifical Neural Network!");
             Console.WriteLine("It will learn more and more as you play against it.");
@@ -45,6 +45,8 @@ namespace ANNtictactoe
 
             while (p.playing)
             {
+                t = new TicTacToe();
+                turn = 0;
                 Console.WriteLine("First or Second? (1 or 2)");
                 p.reply = Console.ReadLine();
                 if (p.reply.Equals("1"))
@@ -71,23 +73,51 @@ namespace ANNtictactoe
                 {
                     if (p.isTurn)
                     {
-                        Console.WriteLine(t.ToString());
-                        Console.WriteLine("Where would you like to go? (ex 1,3 or 2,2)");
-                        p.reply = Console.ReadLine();
-                        try
+                        temp = true;
+                        while (temp)
                         {
-                            x = int.Parse(p.reply.Substring(0, 1));
-                            y = int.Parse(p.reply.Substring(2, 1));
-                        }
-                        catch (IndexOutOfRangeException)
-                        {
-                            Console.WriteLine("Out of bounds!");
-                            p.err = true;
-                        }
-                        
-                        if (!p.err)
-                        {
-                            t.setTile(x-1, y-1, p.icon);
+                            Console.WriteLine(t.ToString());
+                            //if even a SINGLE tile is empty, you can play
+                            fullBoard = false;
+                            for (int x1 = 0; x1 < 3; x1++)
+                            {
+                                for (int y1 = 0; y1 < 3; y1++)
+                                {
+                                    if (t.tilesEmpty[x1, y1]) { fullBoard = true; }
+                                }
+                            }
+                            if (!fullBoard)
+                            {
+                                Console.WriteLine("Board full! Breaking!");
+                                p.inGame = false;
+                                p.isTurn = false;
+                                break;
+                            }
+
+                            Console.WriteLine("Where would you like to go? (ex 1,3 or 2,2)");
+                            p.reply = Console.ReadLine();
+                            try
+                            {
+                                x = int.Parse(p.reply.Substring(0, 1));
+                                y = int.Parse(p.reply.Substring(2, 1));
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                Console.WriteLine("Out of bounds!");
+                                p.err = true;
+                            }
+
+                            if (!p.err)
+                            {
+                                if (t.setTile(x - 1, y - 1, p.icon))
+                                {
+                                    temp = false;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Sorry, that didn't work!");
+                                }
+                            }
                         }
                         p.err = false;
                         p.isTurn = false;
@@ -97,7 +127,12 @@ namespace ANNtictactoe
                     {
                         Console.WriteLine("Turn: {0}", turn);   //test
                         Console.WriteLine("ANN is thinking...");
-                        s = p.enemy.getBestLocation(turn);
+                        s = p.enemy.getBestLocation(turn-1, t.tilesEmpty);
+                        if (s.Equals("-1,-1"))
+                        {
+                            Console.WriteLine("Breaking!"); //add proper leave here
+                            break;
+                        }
                         x = int.Parse(s.Substring(0, 1));
                         y = int.Parse(s.Substring(2, 1));
                         Console.WriteLine("ANN has decided!");
@@ -117,6 +152,7 @@ namespace ANNtictactoe
     class TicTacToe
     {
         Tile[,] tiles = new Tile[3,3];
+        public bool[,] tilesEmpty = new bool[3,3];
 
         public TicTacToe()
         {
@@ -125,14 +161,37 @@ namespace ANNtictactoe
                 for(int y = 0; y < 3; y++)
                 {
                     tiles[x, y] = new Tile("-");
+                    tilesEmpty[x, y] = true;
+                }
+            }
+        }
+
+        public void update()
+        {
+            int count = 0;
+            for (int x = 0; x < 3; x++)
+            {
+                for (int y = 0; y < 3; y++)
+                {
+                    if (!tiles[x, y].value.Equals("-"))
+                    {
+                        tilesEmpty[x,y] = false;
+                    }
+                    count++;
                 }
             }
         }
 
         //have this return true if successful, false if not
-        public void setTile(int x, int y, string v)
+        public bool setTile(int x, int y, string v)
         {
-            tiles[x, y].value = v;
+            if (tilesEmpty[x, y])
+            {
+                tiles[x, y].value = v;
+                tilesEmpty[x, y] = false;
+                return true;
+            }
+            return false;
         }
 
         public string getTile(int x, int y)
@@ -184,26 +243,44 @@ namespace ANNtictactoe
             }
         }
 
-        public string getBestLocation(int turn)
+        public string getBestLocation(int turn,bool[,] a)
         {
             string s = "";
+            int pos = 0;
+            bool[] isEmpty = new bool[9];
+            for (int x = 0; x < 3; x++)
+            {
+                for (int y = 0; y < 3; y++)
+                {
+                    isEmpty[pos] = a[x, y];
+                    pos++;
+                }
+            }
+
             Tile t = new Tile(-100.0);
-            int pos = -1;
+            pos = -1;
             for (int x = 0; x < 9; x++)
             {
-                if (turns[x,turn].fitness > t.fitness)      //should break if it takes it's 6th turn, cus it shouldn't be able to!!
+                //if the tile in the database has a better fitness than the current tile AND isn't empty, take it
+                if (turns[x,turn].fitness > t.fitness && isEmpty[x])      //should break if it takes it's 6th turn, cus it shouldn't be able to!!
                 {
                     t = turns[x, turn];
                     pos = x;
                 }
             }
+            if (t.fitness == -100.0)
+            {
+                Console.WriteLine("ANN cannot play.");
+                s = "-1,-1";
+            }
+            else
+            {
+                int row = getRow(pos + 1);
+                int col = getCol(pos + 1);
 
-            int row = getRow(pos + 1);
-            int col = getCol(pos + 1);
-
-            //gotta return the position in a string like 33 or 13 something like that 
-            s += $"{row},{col}";
-
+                //gotta return the position in a string like 33 or 13 something like that 
+                s += $"{row},{col}";
+            }
             return s;
         }
 
