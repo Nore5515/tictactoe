@@ -4,3 +4,6 @@ c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictacto
 c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictactoe\bin\Debug\ANNtictactoe.pdb
 c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictactoe\obj\Debug\ANNtictactoe.exe
 c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictactoe\obj\Debug\ANNtictactoe.pdb
+C:\Users\Nore5515\Documents\Visual Studio 2015\Projects\ANNtictactoe\tictactoe\ANNtictactoe\ANNtictactoe\bin\Debug\ANNtictactoe.exe.config
+C:\Users\Nore5515\Documents\Visual Studio 2015\Projects\ANNtictactoe\tictactoe\ANNtictactoe\ANNtictactoe\obj\Debug\ANNtictactoe.exe
+C:\Users\Nore5515\Documents\Visual Studio 2015\Projects\ANNtictactoe\tictactoe\ANNtictactoe\ANNtictactoe\obj\Debug\ANNtictactoe.pdb
