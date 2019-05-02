@@ -1,0 +1,6 @@
+c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictactoe\bin\Debug\ANNtictactoe.exe.config
+c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictactoe\obj\Debug\ANNtictactoe.csprojResolveAssemblyReference.cache
+c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictactoe\bin\Debug\ANNtictactoe.exe
+c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictactoe\bin\Debug\ANNtictactoe.pdb
+c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictactoe\obj\Debug\ANNtictactoe.exe
+c:\users\nore5515\documents\visual studio 2015\Projects\ANNtictactoe\ANNtictactoe\obj\Debug\ANNtictactoe.pdb
